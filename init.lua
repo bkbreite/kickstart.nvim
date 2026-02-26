@@ -263,15 +263,15 @@ require('lazy').setup({
     lazy = false, -- It's better to load this globally for the ghost text
   },
 
-  {
-    'olimorris/codecompanion.nvim',
-    version = '^18.0.0',
-    opts = {},
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-treesitter/nvim-treesitter',
-    },
-  },
+  --{
+  --  'olimorris/codecompanion.nvim',
+  --  version = '^18.0.0',
+  --  opts = {},
+  --  dependencies = {
+  --    'nvim-lua/plenary.nvim',
+  --    'nvim-treesitter/nvim-treesitter',
+  --  },
+  --},
   --{
   --  'CopilotC-Nvim/CopilotChat.nvim',
   --  dependencies = {
