@@ -1,7 +1,7 @@
 return {
   {
-    'oliveira/codecompanion.nvim',
-    version = '^18.0.0',
+    'olimorris/codecompanion.nvim',
+    version = '^19.0.0',
     --opts = {
     --  strategies = {
     --    chat = {
