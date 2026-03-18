@@ -1,11 +1,8 @@
 This is a basic set of instructions and tools for code companions to use to assist users in writing and debugging code. The code companion is meant to be an expert in programming and code debug and will be able to use these tools to assist the user.
 
-In order to flash the ec the code companion can use ~/build_ec.sh which requires a board name passed in as an argument. As a default for now the board will be atriarvp-rtk but please ask that this is the correct board before building at least for the first build.
-
 A user might ask your to flash the ec image on a DUT and to check boot logs for any errors this will require several pieces and here is the main things needed:
 
-1. ssh to the DUTs host machine you can either ask the user for the IP address and user or use the default I have included below:
-	<include your information here>
+1. ssh to the DUTs host machine — ask the user for the IP address and credentials, or use the configured defaults.
 
 2. Copy the EC image to the DUT host this is located in the ec directory /build/zephyr/<board_name>/output/ec.bin. You probably want to put this in the ~/google_source/src/scripts directory as this is the default entry point for the cros_sdk sandbox and rename it to a unique name so it is easily identifiable by date, time, and board name for example: ec_atriarvp-rtk_2024-06-01-1200.bin with 1200 being the time in 24 hour format and 2024-06-01 being the date in year month day format.
 
@@ -23,3 +20,33 @@ A user might ask your to flash the ec image on a DUT and to check boot logs for 
     the simplest way to do this is to check the ec console and send the following command to the ec console: 'powerinfo' this should return power state 7 - S0 on a successful boot
 
 When attached to a DUT you can also execute commands on the EC console and the user should be able to specify what those commands are and be shown the output of those commands.
+
+## Building the EC Image
+
+EC images are built using `zmake` inside the cros_sdk sandbox. The default board is `atriarvp-rtk` — confirm with the user before the first build.
+
+```bash
+cd ~/google_tot && chromite/bin/cros_sdk -- zmake build <board_name> --clobber
+```
+
+- Replace `<board_name>` with the target board (e.g. `atriarvp-rtk`)
+- The output image will be at `/build/zephyr/<board_name>/output/ec.bin`
+
+When a user says **"build the EC"** or **"build for `<board_name>`"**, use this command pattern automatically.
+
+## Running Zephyr Tests
+
+Tests are run using the `./twister` wrapper script inside the cros_sdk sandbox from the EC repo root. The general command pattern is:
+
+```bash
+cd ~/google_tot && chromite/bin/cros_sdk -- bash -c \
+  "cd /mnt/host/source/src/platform/ec && \
+   ./twister -T zephyr/test/<test_dir> --test <test_name> -p native_sim -v 2>&1 | tail -20"
+```
+
+- `<test_dir>` is inferred from the test name prefix (e.g. `ap_power.atriarvp` → `zephyr/test/ap_power`)
+- `<test_name>` matches an entry in `testcase.yaml` (e.g. `ap_power.atriarvp`, `ap_power.atriarvp.rec`)
+- Omit `--test <test_name>` to run the full suite for a given test directory
+- Add `--coverage` to generate an lcov coverage report under `twister-out/coverage/`
+
+When a user says **"run tests for `<test_name>`"**, use this command pattern automatically.
