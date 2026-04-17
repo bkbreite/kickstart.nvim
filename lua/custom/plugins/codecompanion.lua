@@ -8,35 +8,35 @@ return {
     },
     config = function()
       require('codecompanion').setup {
-        adapters = {
-          acp = {
-            copilot_acp = function()
-              return require('codecompanion.adapters').extend('copilot_acp', {
-                commands = {
-                  default = { 'copilot', '--acp', '--stdio', '--model', 'claude-opus-4.6' },
-                },
-              })
-            end,
-          },
-        },
         interactions = {
           chat = {
-            adapter = 'copilot_acp',
+            adapter = {
+              name = 'copilot_acp',
+              model = 'claude-opus-4.6',
+            },
             roles = {
               user = 'Brandon',
             },
           },
         },
-        opts = {
-          system_prompt = function()
-            local file = io.open(vim.fn.expand '~/.config/nvim/lua/custom/plugins/codecompanion-context.md', 'r')
-            if file then
-              local content = file:read '*a'
-              file:close()
-              return content
-            end
-            return ''
-          end,
+        rules = {
+          default = {
+            files = {
+              '.clinerules',
+              '.cursorrules',
+              '.goosehints',
+              '.rules',
+              '.windsurfrules',
+              '.github/copilot-instructions.md',
+              'AGENT.md',
+              'AGENTS.md',
+              { path = 'CLAUDE.md', parser = 'claude' },
+              { path = 'CLAUDE.local.md', parser = 'claude' },
+              { path = '~/.claude/CLAUDE.md', parser = 'claude' },
+              '~/.config/nvim/agents/codecompanion-context.md',
+            },
+            is_preset = true,
+          },
         },
       }
     end,
